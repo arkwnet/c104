@@ -219,11 +219,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             printText("お釣り\n", 0);
             printText("￥ " + change + "\n", 2);
             printLine();
-            printText("Arakawa Laboratory\n", 0);
-            printText("Web: https://arkw.net/\n", 0);
-            printText("E-Mail: mail@arkw.net\n", 0);
-            printText("Twitter: @arkw0\n", 0);
-            printText("Misskey: @arkw@mi.arkw.work", 0);
+            printText("X/Twitter: @arkw0\n", 0);
+            printText("Misskey: @arkw@mi.arkw.work\n", 0);
+            printText("Website: https://arkw.net/\n", 0);
+            printText("E-mail: mail@arkw.net", 0);
             feedPaper(5);
             // バックエンドに購買記録を送信
             JSONArray jsonArray = new JSONArray();
