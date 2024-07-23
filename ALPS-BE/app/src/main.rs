@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
+use std::path::Path;
 use chrono::DateTime;
 use chrono::Local;
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
@@ -24,7 +25,6 @@ struct Receive {
   cash: String,
   change: String
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Item {
@@ -54,6 +54,12 @@ struct Payment {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+  let path = Path::new("display.json");
+  if path.is_file() == false {
+    let mut file = File::create("display.json").unwrap();
+    let _write_all = file.write_all(String::from("{}").as_bytes());
+    let _flush = file.flush();
+  }
   HttpServer::new(|| {
     App::new().service(get_display).service(post_display).service(post_record)
   })
