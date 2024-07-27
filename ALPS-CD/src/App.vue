@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="photo"><img :src="imageUrl" /></div>
     <canvas class="canvas" ref="canvas" width="1480" height="720"></canvas>
   </div>
 </template>
@@ -12,7 +11,6 @@ export default {
     return {
       status: false,
       image: new Image(),
-      imageUrl: '',
       imageWidth: 1480,
       imageHeight: 720,
       canvas: null,
@@ -28,7 +26,21 @@ export default {
   methods: {
     update() {
       this.context.drawImage(this.image, 0, 0, this.imageWidth, this.imageHeight)
-      this.imageUrl = this.canvas.toDataURL()
+      this.context.fillStyle = '#fff'
+      this.context.fillRect(
+        0,
+        this.imageHeight / 2 - 60,
+        this.imageWidth,
+        this.imageHeight / 2 + 60
+      )
+      this.context.font = '160px sans-serif'
+      this.context.fillStyle = '#000'
+      this.context.textAlign = 'left'
+      this.context.fillText('お預かり', 30, this.imageHeight / 2 + 118)
+      this.context.fillText('お釣り', 30, this.imageHeight / 2 + 310)
+      this.context.textAlign = 'right'
+      this.context.fillText('500', this.imageWidth - 30, this.imageHeight / 2 + 118)
+      this.context.fillText('300', this.imageWidth - 30, this.imageHeight / 2 + 310)
       const vm = this
       setTimeout(() => {
         vm.update()
