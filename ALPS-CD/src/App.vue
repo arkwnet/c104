@@ -27,12 +27,13 @@ export default {
   methods: {
     async update() {
       const res = await this.axios.get('/api/display')
+      let data = res.data
       await this.context.drawImage(this.image, 0, 0, this.imageWidth, this.imageHeight)
       if (
-        res.data.upper_left != '' ||
-        res.data.upper_right != '' ||
-        res.data.lower_left != '' ||
-        res.data.lower_right != ''
+        data.upper_left != '' ||
+        data.upper_right != '' ||
+        data.lower_left != '' ||
+        data.lower_right != ''
       ) {
         this.context.fillStyle = '#fff'
         await this.context.fillRect(
@@ -44,16 +45,24 @@ export default {
         this.context.font = '160px sans-serif'
         this.context.fillStyle = '#000'
         this.context.textAlign = 'left'
-        await this.context.fillText(res.data.upper_left, 30, this.imageHeight / 2 + 118)
-        await this.context.fillText(res.data.lower_left, 30, this.imageHeight / 2 + 310)
+        await this.context.fillText(data.upper_left, 30, this.imageHeight / 2 + 118)
+        await this.context.fillText(data.lower_left, 30, this.imageHeight / 2 + 310)
+        this.context.fillStyle = '#fff'
+        await this.context.fillRect(
+          this.imageWidth / 2 + 180,
+          this.imageHeight / 2 - 60,
+          this.imageWidth / 2 - 180,
+          this.imageHeight / 2 + 60
+        )
+        this.context.fillStyle = '#000'
         this.context.textAlign = 'right'
         await this.context.fillText(
-          res.data.upper_right,
+          data.upper_right,
           this.imageWidth - 30,
           this.imageHeight / 2 + 118
         )
         await this.context.fillText(
-          res.data.lower_right,
+          data.lower_right,
           this.imageWidth - 30,
           this.imageHeight / 2 + 310
         )
