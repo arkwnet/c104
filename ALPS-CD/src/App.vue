@@ -24,27 +24,43 @@ export default {
     this.update()
   },
   methods: {
-    update() {
-      this.context.drawImage(this.image, 0, 0, this.imageWidth, this.imageHeight)
-      this.context.fillStyle = '#fff'
-      this.context.fillRect(
-        0,
-        this.imageHeight / 2 - 60,
-        this.imageWidth,
-        this.imageHeight / 2 + 60
-      )
-      this.context.font = '160px sans-serif'
-      this.context.fillStyle = '#000'
-      this.context.textAlign = 'left'
-      this.context.fillText('お預かり', 30, this.imageHeight / 2 + 118)
-      this.context.fillText('お釣り', 30, this.imageHeight / 2 + 310)
-      this.context.textAlign = 'right'
-      this.context.fillText('500', this.imageWidth - 30, this.imageHeight / 2 + 118)
-      this.context.fillText('300', this.imageWidth - 30, this.imageHeight / 2 + 310)
+    async update() {
+      const res = await this.axios.get('/api/display')
+      await this.context.drawImage(this.image, 0, 0, this.imageWidth, this.imageHeight)
+      if (
+        res.data.upper_left != '' ||
+        res.data.upper_right != '' ||
+        res.data.lower_left != '' ||
+        res.data.lower_right != ''
+      ) {
+        this.context.fillStyle = '#fff'
+        await this.context.fillRect(
+          0,
+          this.imageHeight / 2 - 60,
+          this.imageWidth,
+          this.imageHeight / 2 + 60
+        )
+        this.context.font = '160px sans-serif'
+        this.context.fillStyle = '#000'
+        this.context.textAlign = 'left'
+        await this.context.fillText(res.data.upper_left, 30, this.imageHeight / 2 + 118)
+        await this.context.fillText(res.data.lower_left, 30, this.imageHeight / 2 + 310)
+        this.context.textAlign = 'right'
+        await this.context.fillText(
+          res.data.upper_right,
+          this.imageWidth - 30,
+          this.imageHeight / 2 + 118
+        )
+        await this.context.fillText(
+          res.data.lower_right,
+          this.imageWidth - 30,
+          this.imageHeight / 2 + 310
+        )
+      }
       const vm = this
       setTimeout(() => {
         vm.update()
-      }, 500)
+      }, 1000 / 2)
     }
   }
 }
