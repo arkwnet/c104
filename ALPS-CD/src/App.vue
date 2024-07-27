@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas class="canvas" ref="canvas" width="1480" height="720"></canvas>
+    <canvas class="canvas" ref="canvas" width="1480" height="720" @click="click"></canvas>
   </div>
 </template>
 
@@ -14,7 +14,8 @@ export default {
       imageWidth: 1480,
       imageHeight: 720,
       canvas: null,
-      context: null
+      context: null,
+      isFullScreen: false
     }
   },
   mounted() {
@@ -61,6 +62,15 @@ export default {
       setTimeout(() => {
         vm.update()
       }, 1000 / 2)
+    },
+    click() {
+      if (this.isFullScreen == false) {
+        document.body.requestFullscreen()
+        this.isFullScreen = true
+      } else {
+        document.exitFullscreen()
+        this.isFullScreen = false
+      }
     }
   }
 }
