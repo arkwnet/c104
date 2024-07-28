@@ -63,8 +63,8 @@ async fn main() -> std::io::Result<()> {
   HttpServer::new(|| {
     App::new().service(get_display).service(post_display).service(post_record)
   })
-  .bind(("app", 8080))?
-  .run()
+  .bind("0.0.0.0:8080")
+  .expect("").run()
   .await
 }
 
