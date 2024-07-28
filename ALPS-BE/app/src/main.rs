@@ -2,11 +2,12 @@ use std::fs::File;
 use std::io::Read;
 use std::io::Write;
 use std::path::Path;
+use actix_cors::Cors;
+use actix_web::{http::header, get, post, web, App, HttpResponse, HttpServer, Responder};
 use chrono::DateTime;
 use chrono::Local;
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use serde::{Serialize, Deserialize};
 use rusqlite::{params, Connection, Result};
+use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Display {
@@ -61,7 +62,14 @@ async fn main() -> std::io::Result<()> {
     let _flush = file.flush();
   }
   HttpServer::new(|| {
-    App::new().service(get_display).service(post_display).service(post_record)
+    let cors = Cors::default()
+      .allowed_origin("https://arkw.net/")
+      .allowed_methods(vec!["GET", "POST"])
+      .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+      .allowed_header(header::CONTENT_TYPE)
+      .max_age(3600);
+    App::new()
+    .wrap(cors).service(get_display).service(post_display).service(post_record)
   })
   .bind("0.0.0.0:8080")
   .expect("").run()
