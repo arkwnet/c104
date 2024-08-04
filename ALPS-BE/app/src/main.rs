@@ -64,7 +64,7 @@ async fn main() -> std::io::Result<()> {
   HttpServer::new(|| {
     let cors = Cors::default()
       .allowed_origin("https://arkw.net/")
-      .allowed_methods(vec!["GET", "POST"])
+      .allowed_methods(vec!["GET", "POST", "OPTIONS"])
       .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
       .allowed_header(header::CONTENT_TYPE)
       .max_age(3600);
