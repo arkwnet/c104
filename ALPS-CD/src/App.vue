@@ -21,12 +21,29 @@ export default {
   mounted() {
     this.canvas = this.$refs.canvas
     this.context = this.canvas.getContext('2d')
-    this.image.src = '/img/background.png'
+    if (import.meta.env.MODE == 'development') {
+      this.image.src = '/img/background.png'
+    } else {
+      this.image.src = './img/background.png'
+    }
+
     this.update()
   },
   methods: {
     async update() {
-      const res = await this.axios.get('/api/display')
+      let url
+      if (import.meta.env.MODE == 'development') {
+        url = '/api'
+      } else {
+        url = import.meta.env.VITE_BACKEND_URL
+      }
+      const res = await this.axios.get(url + '/display', {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
       let data = res.data
       await this.context.drawImage(this.image, 0, 0, this.imageWidth, this.imageHeight)
       if (
