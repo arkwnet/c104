@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
+        items.add(new Item("SlimDot", 100, R.drawable.book));
+        items.add(new Item("オンデマンド同人誌", 10, R.drawable.book));
         items.add(new Item("Train Driver 遠州鉄道編", 100, R.drawable.gamecd));
         items.add(new Item("エンジニアの中国語入門", 200, R.drawable.book));
         items.add(new Item("ハコ単", 100, R.drawable.gamecd));
