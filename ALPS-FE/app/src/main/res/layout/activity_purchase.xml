@@ -46,7 +46,9 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/primary"
             android:text="@string/payment_money"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Button
@@ -54,7 +56,9 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/primary"
             android:text="@string/payment_credit"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Button
@@ -62,7 +66,10 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/primary"
             android:text="@string/payment_quicpay"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Button
@@ -70,7 +77,10 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/primary"
             android:text="@string/payment_id"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Button
@@ -78,7 +88,9 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/primary"
             android:text="@string/payment_ic"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Button

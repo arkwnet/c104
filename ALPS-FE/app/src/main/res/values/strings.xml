@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ALPS-FE</string>
-    <string name="main_purchase">購入</string>
+    <string name="main_purchase">会計</string>
     <string name="main_card">名刺</string>
     <string name="main_clear">取消</string>
     <string name="purchase_total">合計金額</string>

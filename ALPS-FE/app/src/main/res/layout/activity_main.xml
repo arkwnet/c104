@@ -48,7 +48,9 @@
                 android:layout_width="140dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="5dp"
+                android:backgroundTint="@color/primary"
                 android:text="@string/main_purchase"
+                android:textColor="@color/white"
                 android:textSize="24sp" />
 
             <Button
@@ -56,7 +58,9 @@
                 android:layout_width="100dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="5dp"
+                android:backgroundTint="@color/primary"
                 android:text="@string/main_card"
+                android:textColor="@color/white"
                 android:textSize="24sp" />
 
             <Button
