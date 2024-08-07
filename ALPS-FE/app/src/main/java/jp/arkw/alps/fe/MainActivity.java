@@ -1,9 +1,12 @@
 package jp.arkw.alps.fe;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sunmi.peripheral.printer.InnerPrinterCallback;
 import com.sunmi.peripheral.printer.InnerPrinterException;
@@ -25,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -39,7 +44,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Context context;
-    private File file;
+    private File fileId;
+    private File fileLog;
     private String BACKEND_URL;
 
     private SunmiPrinterService sunmiPrinterService;
@@ -48,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static int FoundSunmiPrinter = 0x00000002;
     public static int LostSunmiPrinter = 0x00000003;
     public int sunmiPrinter = CheckSunmiPrinter;
+
+    private final String[] PERMISSIONS = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private final int REQUEST_PERMISSION = 1000;
 
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Map<String, String>> listSelect = new ArrayList<>();
@@ -73,13 +84,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         context = getApplicationContext();
-        file = new File(context.getFilesDir(), "id.txt");
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+        fileId = new File(context.getFilesDir(), "id.txt");
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileId))) {
             String text = bufferedReader.readLine();
             id = Integer.parseInt(text);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        fileLog = new File(context.getFilesDir(), "log.txt");
 
         items.add(new Item("SlimDot", 100, R.drawable.book));
         items.add(new Item("オンデマンド同人誌", 10, R.drawable.book));
@@ -127,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_purchase).setOnClickListener(this);
         findViewById(R.id.button_card).setOnClickListener(this);
         findViewById(R.id.button_clear).setOnClickListener(this);
+        checkPermission();
         update();
     }
 
@@ -180,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (id >= 10000) {
                 id = 0;
             }
-            try (FileWriter writer = new FileWriter(file, false)) {
+            try (FileWriter writer = new FileWriter(fileId, false)) {
                 writer.write("" + id);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -226,6 +239,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             printText("Website: https://arkw.net/\n", 0);
             printText("E-mail: mail@arkw.net", 0);
             feedPaper(5);
+            FileWriter filewriter = null;
+            // 端末に購買記録をロギング
+            try {
+                filewriter = new FileWriter(fileLog, true);
+                for (int i = 0; i < items.size(); i++) {
+                    final Item item = items.get(i);
+                    if (item.getQuantity() >= 1) {
+                        filewriter.write("[ITEM] timestamp=" + simpleDateFormat.format(date) + ", id=" + id + ", name=" + item.getName() + ", price=" + item.getPrice() + ", quantity=" + item.getQuantity() + "\r\n");
+                    }
+                }
+                filewriter.write("[PURCHASE] timestamp=" + simpleDateFormat.format(date) + ", id=" + id + ", total=" + total + ", payment=" + payment + ", cash=" + cash + ", change=" + change + "\r\n");
+                filewriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             // バックエンドに購買記録を送信
             JSONArray jsonArray = new JSONArray();
             for (int i = 0; i < items.size(); i++) {
@@ -403,5 +431,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BACKEND_URL + url,
                 json.toString()
         ));
+    }
+
+    private void checkPermission(){
+        if (isGranted() == false){
+            requestPermissions(PERMISSIONS, REQUEST_PERMISSION);
+        }
+    }
+
+    private boolean isGranted(){
+        for (int i = 0; i < PERMISSIONS.length; i++){
+            // 初回はPERMISSION_DENIEDが返る
+            if (checkSelfPermission(PERMISSIONS[i]) != PackageManager.PERMISSION_GRANTED) {
+                // 一度リクエストが拒絶された場合にtrueを返す．初回または「今後表示しない」が選択された場合falseを返す．
+                if (shouldShowRequestPermissionRationale(PERMISSIONS[i])) {
+                    Toast.makeText(this, "本アプリの実行には許可が必要です", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION){
+            checkPermission();
+        }
     }
 }
